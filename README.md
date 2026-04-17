@@ -4,7 +4,7 @@ SugCure++ is a reimplementation of the classic Scratch-based SugCure game, rewri
 
 ---
 ## Screenshot
-![Logotype](logotype 2.png)
+![Logotype](logotype.png)
 
 ---
 ## Features
