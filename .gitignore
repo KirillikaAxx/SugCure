@@ -39,3 +39,72 @@
 
 # debug information files
 *.dwo
+
+# =========================
+# Visual Studio
+# =========================
+.vs/
+*.user
+*.VC.db
+*.VC.VC.opendb
+*.opensdf
+*.sdf
+*.suo
+*.cache
+*.log
+
+# =========================
+# Build output
+# =========================
+x64/
+Debug/
+Release/
+build/
+out/
+
+*.exe
+*.ilk
+*.pdb
+*.obj
+*.tlog
+*.idb
+*.ipdb
+*.log
+*.recipe
+
+# =========================
+# ImGui config
+# =========================
+imgui.ini
+
+# =========================
+# Temporary / system
+# =========================
+enc_temp_folder/
+*.tmp
+*.temp
+
+# =========================
+# SFML binaries (DLLs)
+# =========================
+*.dll
+
+# =========================
+# CMake (если вдруг используешь позже)
+# =========================
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# =========================
+# OS
+# =========================
+Thumbs.db
+.DS_Store
+
+# =========================
+# Optional
+# =========================
+# assets/msc/
+# assets/snd/
