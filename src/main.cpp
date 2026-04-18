@@ -103,6 +103,7 @@ int main() {
             //    platforms.end()
             //);
             Platform::remove(pid, platforms);
+
         }
 
         ImGui::End();
