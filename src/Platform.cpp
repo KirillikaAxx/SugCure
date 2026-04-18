@@ -12,7 +12,7 @@ int Platform::getID() const {
 }
 
 sf::RectangleShape& Platform::getShape() {
-    return shape;
+    return shape; // edit
 }
 
 void Platform::remove(int ID, std::vector<Platform> &platforms) {
