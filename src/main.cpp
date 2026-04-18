@@ -6,6 +6,7 @@
 
 #include "Player.hpp"
 #include "Platform.hpp"
+#include "MapManager.hpp"
 #include "config.h"
 #include "imgui.h"
 #include "imgui-SFML.h"
@@ -28,6 +29,9 @@ int main() {
     // old: platforms.push_back(Platform::create(...));
     // new: emplace_back constructor
     platforms.emplace_back(1, 100.f, 600.f, 500.f, 20.f);
+
+    static char mapName[255] = "";
+    static char mapToLoadName[255] = "";
 
     while (window.isOpen()) {
         sf::Time dt = deltaClock.restart();
@@ -104,6 +108,24 @@ int main() {
             //);
             Platform::remove(pid, platforms);
 
+        }
+        ImGui::Separator();
+        ImGui::Text("Level Editor");
+        ImGui::InputText("Map to save name", mapName, 255);
+        if (ImGui::Button("Save Level")) {
+            int code = MapManager::saveMap(platforms, mapName);
+            #ifdef DEBUG
+                std::cout << code << std::endl;
+                std::cout << mapName << std::endl;
+            #endif
+        }
+        ImGui::InputText("Map to load name", mapToLoadName, 255);
+        if (ImGui::Button("Load Level")) {
+            int code = MapManager::loadMap(platforms, mapToLoadName);
+            #ifdef DEBUG
+                std::cout << code << std::endl;
+                std::cout << mapToLoadName << std::endl;
+            #endif
         }
 
         ImGui::End();
