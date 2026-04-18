@@ -1,0 +1,17 @@
+#pragma once
+
+#include <SFML/Graphics.hpp>
+#include <vector>
+
+class Platform {
+public:
+    Platform(int id, float x, float y, float w, float h);
+
+    int getID() const;
+    sf::RectangleShape& getShape();
+    static void remove(int ID, std::vector<Platform> &platforms);
+
+private:
+    int ID;
+    sf::RectangleShape shape;
+};

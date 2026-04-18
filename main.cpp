@@ -2,56 +2,13 @@
 #include <SFML/Audio.hpp>
 #include <iostream>
 #include <vector>
+#include <algorithm> // std::remove_if
 
 #include "Player.hpp"
+#include "Platform.hpp"
+#include "config.h"
 #include "imgui.h"
 #include "imgui-SFML.h"
-
-#define WINDOW_WIDTH 1280
-#define WINDOW_HEIGHT 720
-#define WINDOW_TITLE "SugCure"
-#define STATIC_FPS 60
-
-
-struct Platform {
-    int ID;
-    sf::RectangleShape shape;
-};
-
-Platform create(int ID, float x, float y, float w, float h) {
-    Platform p;
-    p.ID = ID;
-    p.shape.setSize({ w, h });
-    p.shape.setPosition({ x, y });
-    p.shape.setFillColor(sf::Color::Green);
-    p.ID = ID;
-    return p;
-}
-
-void kill(int ID, std::vector<Platform>& array) {
-    for (auto it = array.begin(); it != array.end();) {
-        if (it->ID == ID)
-            it = array.erase(it);
-        else
-            ++it;
-    }
-}
-
-void drawBackground(sf::RenderWindow& window) {
-    sf::RectangleShape tile(sf::Vector2f(32.f, 32.f));
-
-    for (int y = 0; y < WINDOW_HEIGHT; y += 32) {
-        for (int x = 0; x < WINDOW_WIDTH; x += 32) {
-            if ((x / 32 + y / 32) % 2 == 0)
-                tile.setFillColor(sf::Color(0, 105, 24));
-            else
-                tile.setFillColor(sf::Color(0, 181, 41));
-
-            tile.setPosition((float)x, (float)y);
-            window.draw(tile);
-        }
-    }
-}
 
 int main() {
     sf::RenderWindow window(
@@ -68,7 +25,9 @@ int main() {
 
     sf::Clock deltaClock;
 
-    platforms.push_back(create(1, 100, 600, 500, 20));
+    // old: platforms.push_back(Platform::create(...));
+    // new: emplace_back constructor
+    platforms.emplace_back(1, 100.f, 600.f, 500.f, 20.f);
 
     while (window.isOpen()) {
         sf::Time dt = deltaClock.restart();
@@ -83,11 +42,13 @@ int main() {
 
         ImGui::SFML::Update(window, dt);
 
+        // old: copy shapes into vector<RectangleShape>
+        // new: still needed unless Player API changes later
         std::vector<sf::RectangleShape> collisionShapes;
         collisionShapes.reserve(platforms.size());
 
         for (auto& p : platforms)
-            collisionShapes.push_back(p.shape);
+            collisionShapes.push_back(p.getShape()); // old: p.shape
 
         player.update(collisionShapes);
 
@@ -101,6 +62,7 @@ int main() {
         sf::Vector2f pos = player.getPosition();
         ImGui::Text("Player X: %.1f", pos.x);
         ImGui::Text("Player Y: %.1f", pos.y);
+
         if (ImGui::Button("Return player")) {
             player.returnOnBase();
         }
@@ -113,7 +75,6 @@ int main() {
         static float py = 100.f;
         static float pw = 200.f;
         static float ph = 20.f;
-
         static int pid = 0;
 
         ImGui::InputFloat("X", &px);
@@ -121,28 +82,41 @@ int main() {
         ImGui::InputFloat("Width", &pw);
         ImGui::InputFloat("Height", &ph);
 
+        // old:
+        // int ID = (int)platforms.size() + 1;
+        // platforms.push_back(Platform::create(...));
+
+        // new:
         if (ImGui::Button("Add platform")) {
             int ID = (int)platforms.size() + 1;
-            platforms.push_back(create(ID, px, py, pw, ph));
+            platforms.emplace_back(ID, px, py, pw, ph);
         }
 
         ImGui::InputInt("ID", &pid);
 
         if (ImGui::Button("Remove by ID")) {
-            kill(pid, platforms);
+            //platforms.erase(
+            //    std::remove_if(platforms.begin(), platforms.end(),
+            //        [&](const Platform& p) {
+            //            return p.getID() == pid;
+            //        }),
+            //    platforms.end()
+            //);
+            Platform::remove(pid, platforms);
         }
 
         ImGui::End();
 
         window.clear(sf::Color::Black);
 
+        // old: window.draw(p.shape)
+        // new: getter
         for (auto& p : platforms)
-            window.draw(p.shape);
+            window.draw(p.getShape());
 
         player.draw(window);
 
         ImGui::SFML::Render(window);
-
         window.display();
     }
 
