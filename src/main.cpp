@@ -41,6 +41,7 @@ int main() {
             ImGui::SFML::ProcessEvent(event);
 
             if (event.type == sf::Event::Closed)
+                
                 window.close();
         }
 

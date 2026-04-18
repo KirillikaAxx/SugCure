@@ -5,7 +5,7 @@
 
 class Platform {
 public:
-    Platform(int id, float x, float y, float w, float h);
+    Platform(int ID, float x, float y, float w, float h);
 
     int getID() const;
     const sf::RectangleShape& Platform::getShape() const;

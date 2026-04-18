@@ -1,4 +1,5 @@
 #include "MapManager.hpp"
+#include "config.h"
 
 #include <iostream>
 #include <fstream>
@@ -38,6 +39,12 @@ int MapManager::saveMap(const std::vector<Platform>& platforms, const std::strin
 int MapManager::loadMap(std::vector<Platform>& platforms, const std::string& fileName) {
     std::ifstream file(fileName);
 
+    if (!std::filesystem::exists(fileName)) {
+    #ifdef DEBUG
+        std::cout << "File does not exist: " << fileName << std::endl;
+    #endif
+        return -1;
+    }
     if (!file.is_open())
         return -1;
 

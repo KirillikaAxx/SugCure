@@ -1,7 +1,7 @@
 #include "Platform.hpp"
 #include <vector>
 
-Platform::Platform(int id, float x, float y, float w, float h): ID(id) {
+Platform::Platform(int ID, float x, float y, float w, float h): ID(ID) {
     shape.setSize({ w, h });
     shape.setPosition({ x, y });
     shape.setFillColor(sf::Color::Green);
