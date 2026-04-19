@@ -1,3 +1,5 @@
+# fixed CMakeLists.txt version
+
 cmake_minimum_required(VERSION 3.20)
 project(SugCure)
 
@@ -5,17 +7,22 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # ---------------------------
+# MSVC build boost
+# ---------------------------
+if (MSVC)
+    add_compile_options(/MP)
+endif()
+
+# ---------------------------
 # SFML
 # ---------------------------
 set(SFML_DIR "${CMAKE_SOURCE_DIR}/libraries/lib/cmake/SFML")
-set(SFML_STATIC_LIBRARIES TRUE)
-
 find_package(SFML REQUIRED COMPONENTS graphics window system audio network)
 
 # ---------------------------
-# ImGui sources
+# ImGui
 # ---------------------------
-set(IMGUI_SRC
+add_library(imgui STATIC
         libraries/include/imgui/imgui.cpp
         libraries/include/imgui/imgui_draw.cpp
         libraries/include/imgui/imgui_tables.cpp
@@ -23,32 +30,46 @@ set(IMGUI_SRC
         libraries/include/imgui/imgui-SFML.cpp
 )
 
+target_include_directories(imgui PRIVATE
+        ${CMAKE_SOURCE_DIR}/libraries/include
+        ${CMAKE_SOURCE_DIR}/libraries/include/imgui
+)
+
+target_link_libraries(imgui PRIVATE
+        sfml-graphics
+        sfml-window
+        sfml-system
+        opengl32
+)
+
 # ---------------------------
-# Source files
+# Game sources
 # ---------------------------
 set(SOURCES
         src/main.cpp
         src/Player.cpp
         src/Platform.cpp
         src/MapManager.cpp
-        ${IMGUI_SRC}
+        src/Editor/Editor.cpp
+        src/Editor/Editor.h
 )
 
 add_executable(SugCure ${SOURCES})
 
 # ---------------------------
-# Include dirs
+# Includes
 # ---------------------------
 target_include_directories(SugCure PRIVATE
+        ${CMAKE_SOURCE_DIR}/src
         ${CMAKE_SOURCE_DIR}/libraries/include
         ${CMAKE_SOURCE_DIR}/libraries/include/imgui
-        ${CMAKE_SOURCE_DIR}/src
 )
 
 # ---------------------------
 # Linking
 # ---------------------------
-target_link_libraries(SugCure
+target_link_libraries(SugCure PRIVATE
+        imgui
         sfml-graphics
         sfml-window
         sfml-system
@@ -58,19 +79,10 @@ target_link_libraries(SugCure
 )
 
 # ---------------------------
-# Assets copy
+# Copy assets after build
 # ---------------------------
 add_custom_command(TARGET SugCure POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/assets
         $<TARGET_FILE_DIR:SugCure>/assets
-)
-
-# ---------------------------
-# DLL copy
-# ---------------------------
-add_custom_command(TARGET SugCure POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/out
-        $<TARGET_FILE_DIR:SugCure>
 )
