@@ -35,6 +35,16 @@ int main() {
     sf::Sound sound;
     sound.setBuffer(buffer);
 
+    bool showJumpEffect = false;
+    sf::Clock effectClock;
+
+    sf::RectangleShape jumpShapeEffect;
+    float jumpEffectAlpha = 20;
+    jumpShapeEffect.setFillColor(sf::Color(255, 157, 0, jumpEffectAlpha));
+    jumpShapeEffect.setSize(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT));
+    jumpShapeEffect.setPosition(0, 0);
+
+
     while (window.isOpen()) {
         sf::Event event;
 
@@ -59,15 +69,40 @@ int main() {
             if (player.jump()) {
                 sound.stop();
                 sound.play();
+
+                showJumpEffect = true;
+                effectClock.restart();
+                jumpEffectAlpha = 20;
             }
         }
 
         player.update(collisionShapes);
 
-        // editor is here
         Editor::edit(platforms, player, dt);
 
         window.clear(sf::Color::Black);
+
+        if (showJumpEffect) {
+            float t = effectClock.getElapsedTime().asSeconds();
+
+            float duration = 3.f;
+
+            float progress = t / duration; // 0 -> 1
+
+            jumpEffectAlpha = 20.f * (1.f - progress);
+
+            if (jumpEffectAlpha < 0.f)
+                jumpEffectAlpha = 0.f;
+
+            jumpShapeEffect.setFillColor(
+                sf::Color(255, 157, 0, static_cast<sf::Uint8>(jumpEffectAlpha))
+            );
+
+            window.draw(jumpShapeEffect);
+
+            if (t >= duration)
+                showJumpEffect = false;
+        }
 
         for (auto& p : platforms)
             window.draw(p.getShape());
@@ -77,7 +112,4 @@ int main() {
         ImGui::SFML::Render(window);
         window.display();
     }
-
-    ImGui::SFML::Shutdown();
-    return 0;
 }
