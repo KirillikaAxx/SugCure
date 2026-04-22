@@ -7,6 +7,6 @@
 class MapManager {
 public:
 	static int saveMap(const std::vector<Platform>& platforms, const std::string& fileName);
-	static int MapManager::loadMap(std::vector<Platform>& platforms, const std::string& fileName);
+	static int loadMap(std::vector<Platform>& platforms, const std::string& fileName);
 };
 

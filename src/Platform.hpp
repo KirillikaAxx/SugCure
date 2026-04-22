@@ -8,7 +8,7 @@ public:
     Platform(int ID, float x, float y, float w, float h);
 
     int getID() const;
-    const sf::RectangleShape& Platform::getShape() const;
+    const sf::RectangleShape& getShape() const;
     static void remove(int ID, std::vector<Platform> &platforms);
 
 private:
