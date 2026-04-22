@@ -4,6 +4,7 @@
 
 class Player {
 private:
+
     sf::Texture texture;
     sf::Sprite sprite;
 
@@ -24,7 +25,7 @@ public:
 
     void returnOnBase();
     void update(const std::vector<sf::RectangleShape>& platforms);
-    void jump();
+    bool jump();
     void draw(sf::RenderWindow& window);
 
     sf::Vector2f getPosition() const;

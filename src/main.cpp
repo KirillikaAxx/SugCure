@@ -29,6 +29,12 @@ int main() {
 
     sf::Clock deltaClock;
 
+    sf::SoundBuffer buffer;
+    buffer.loadFromFile("assets/snd/jump.mp3");
+
+    sf::Sound sound;
+    sound.setBuffer(buffer);
+
     while (window.isOpen()) {
         sf::Event event;
 
@@ -48,6 +54,13 @@ int main() {
 
         for (auto& p : platforms)
             collisionShapes.push_back(p.getShape());
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+            if (player.jump()) {
+                sound.stop();
+                sound.play();
+            }
+        }
 
         player.update(collisionShapes);
 

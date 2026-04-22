@@ -25,9 +25,13 @@ Player::Player() {
     sprite.setPosition(x, y);
 }
 
-void Player::jump() {
+bool Player::jump() {
+    if (!onGround)
+        return false;
+
     velocityY = jumpForce;
     onGround = false;
+    return true;
 }
 
 void Player::update(const std::vector<sf::RectangleShape>& platforms) {
